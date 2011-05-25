@@ -32,7 +32,7 @@
 
 
 - (id)initWithString:(NSString *)string andRange:(NSRange)range {
-  if (self = [super init]) {
+  if ((self = [super init])) {
     BOOL isString = NO;
     BOOL isRange = NO;
     if (string != nil) {
@@ -62,7 +62,7 @@
 
 
 - (id)initFromTokenizer:(CFStringTokenizerRef)tokenizer withString:(NSString *)string withMask:(CFStringTokenizerTokenType)mask withType:(CSStringTokenType)type fetchSubTokens:(BOOL)fetchSubTokens {
-  if (self = [super init]) {
+  if ((self = [super init])) {
     if (mask == kCFStringTokenizerTokenNone) {
       [self release];
       return nil;
