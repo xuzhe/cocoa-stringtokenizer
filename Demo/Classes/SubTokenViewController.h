@@ -13,6 +13,6 @@
   NSArray *tokens;
 }
 
-@property(nonatomic, retain) NSArray *tokens;
+@property(nonatomic, strong) NSArray *tokens;
 
 @end

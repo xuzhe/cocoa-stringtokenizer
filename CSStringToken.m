@@ -30,14 +30,6 @@
 #pragma mark -
 #pragma mark Initializers
 
-- (void)dealloc {
-    [_string release];
-    [_latinTranscription release];
-    [_language release];
-    [_subTokens release];
-    
-    [super dealloc];
-}
 
 - (id)initWithString:(NSString *)string andRange:(NSRange)range {
     if ((self = [super init])) {
@@ -72,7 +64,6 @@
 - (id)initFromTokenizer:(CFStringTokenizerRef)tokenizer withString:(NSString *)string withMask:(CFStringTokenizerTokenType)mask withType:(CSStringTokenType)type fetchSubTokens:(BOOL)fetchSubTokens {
     if ((self = [super init])) {
         if (mask == kCFStringTokenizerTokenNone) {
-            [self release];
             return nil;
         }
         
@@ -105,12 +96,12 @@
         
         CFTypeRef attr = CFStringTokenizerCopyCurrentTokenAttribute(tokenizer, kCFStringTokenizerAttributeLatinTranscription);
         if (attr != NULL) {
-            self.latinTranscription = (NSString *)attr;
+            self.latinTranscription = (__bridge NSString *)attr;
             CFRelease(attr);
         }
         attr = CFStringTokenizerCopyCurrentTokenAttribute(tokenizer, kCFStringTokenizerAttributeLanguage);
         if (attr != NULL) {
-            self.language = (NSString *)attr;
+            self.language = (__bridge NSString *)attr;
             CFRelease(attr);
         }
         
@@ -126,7 +117,7 @@
                 strings = [[NSMutableArray alloc] init];
             }
             
-            CFIndex numRanges = CFStringTokenizerGetCurrentSubTokens(tokenizer, ranges, maxRangeLength, (CFMutableArrayRef)strings);
+            CFIndex numRanges = CFStringTokenizerGetCurrentSubTokens(tokenizer, ranges, maxRangeLength, (__bridge CFMutableArrayRef)strings);
             
             CFIndex count;
             if (isRange) {
@@ -154,12 +145,8 @@
             }
             
             self.subTokens = [NSArray arrayWithArray:subTokens];
-            [subTokens release];
             if (ranges != NULL) {
                 free(ranges);
-            }
-            if (strings != nil) {
-                [strings release];
             }
         }
     }
@@ -172,12 +159,12 @@
 
 
 + (id)tokenWithString:(NSString *)string andRange:(NSRange)range {
-    return [[[self alloc] initWithString:string andRange:range] autorelease];
+    return [[self alloc] initWithString:string andRange:range];
 }
 
 
 + (id)tokenFromTokenizer:(CFStringTokenizerRef)tokenizer withString:(NSString *)string withMask:(CFStringTokenizerTokenType)mask withType:(CSStringTokenType)type fetchSubTokens:(BOOL)fetchSubTokens {
-    return [[[self alloc] initFromTokenizer:tokenizer withString:string withMask:mask withType:type fetchSubTokens:fetchSubTokens] autorelease];
+    return [[self alloc] initFromTokenizer:tokenizer withString:string withMask:mask withType:type fetchSubTokens:fetchSubTokens];
 }
 
 

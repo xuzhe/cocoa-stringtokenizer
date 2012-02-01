@@ -37,7 +37,7 @@ typedef NSUInteger CSStringTokenType;
 @property(readonly, copy) NSString *latinTranscription;
 @property(readonly, copy) NSString *language;
 @property(readonly) BOOL hasSubTokens;
-@property(readonly, retain) NSArray *subTokens;
+@property(readonly, strong) NSArray *subTokens;
 @property(readonly) BOOL containsNumbers;
 @property(readonly) BOOL containsNonLetters;
 @property(readonly) BOOL isCJWord;

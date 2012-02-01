@@ -77,7 +77,7 @@
   
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (cell == nil) {
-    cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
   }
   
 	CSStringToken *token = [tokens objectAtIndex:indexPath.row];
@@ -120,7 +120,6 @@
     vc.title = NSStringFromRange(token.range);
   }
   [self.navigationController pushViewController:vc animated:YES];
-  [vc release];
 }
 
 
@@ -200,7 +199,7 @@
     NSLog(@"%@, %@", token.string, NSStringFromRange(token.range));
     [array addObject:token];
   }
-  tokens = [array retain];
+  tokens = array;
   
   [table reloadData];
 }
@@ -224,10 +223,6 @@
 }
 
 
-- (void)dealloc {
-  [tokens release];
-  [super dealloc];
-}
 
 
 @end

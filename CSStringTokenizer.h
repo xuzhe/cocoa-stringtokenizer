@@ -26,7 +26,7 @@ typedef CFOptionFlags CSStringTokenizerOptions;
 @property(copy) NSString *string;
 @property(assign) NSRange range;
 @property(assign) CSStringTokenizerOptions options;
-@property(retain) NSLocale *locale;
+@property(strong) NSLocale *locale;
 @property(assign) BOOL fetchesSubTokens;
 @property(assign) CSStringTokenType tokenType;
 

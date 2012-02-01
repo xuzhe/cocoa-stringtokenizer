@@ -93,7 +93,7 @@
   
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (cell == nil) {
-    cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
   }
   
   CSStringToken *token = [tokens objectAtIndex:indexPath.row];
@@ -152,10 +152,6 @@
 */
 
 
-- (void)dealloc {
-  [tokens release];
-  [super dealloc];
-}
 
 
 @end

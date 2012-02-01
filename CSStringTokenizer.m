@@ -85,47 +85,47 @@
 
 
 + (id)tokenizer {
-    return [[[self alloc] init] autorelease];
+    return [[self alloc] init];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string {
-    return [[[self alloc] initWithString:string] autorelease];
+    return [[self alloc] initWithString:string];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string range:(NSRange)range {
-    return [[[self alloc] initWithString:string range:range] autorelease];
+    return [[self alloc] initWithString:string range:range];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string options:(CSStringTokenizerOptions)options {
-    return [[[self alloc] initWithString:string options:options] autorelease];
+    return [[self alloc] initWithString:string options:options];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string locale:(NSLocale *)locale {
-    return [[[self alloc] initWithString:string locale:locale] autorelease];
+    return [[self alloc] initWithString:string locale:locale];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string range:(NSRange)range options:(CSStringTokenizerOptions)options {
-    return [[[self alloc] initWithString:string range:range options:options] autorelease];
+    return [[self alloc] initWithString:string range:range options:options];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string range:(NSRange)range locale:(NSLocale *)locale {
-    return [[[self alloc] initWithString:string range:range locale:locale] autorelease];
+    return [[self alloc] initWithString:string range:range locale:locale];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string options:(CSStringTokenizerOptions)options locale:(NSLocale *)locale {
-    return [[[self alloc] initWithString:string options:options locale:locale] autorelease];
+    return [[self alloc] initWithString:string options:options locale:locale];
 }
 
 
 + (id)tokenizerWithString:(NSString *)string range:(NSRange)range options:(CSStringTokenizerOptions)options locale:(NSLocale *)locale {
-    return [[[self alloc] initWithString:string range:range options:options locale:locale] autorelease];
+    return [[self alloc] initWithString:string range:range options:options locale:locale];
 }
 
 
@@ -147,7 +147,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"string"] || [keyPath isEqualToString:@"range"]) {
-        CFStringTokenizerSetString(tokenizer, (CFStringRef)self.string, CFRangeMake(self.range.location, self.range.length));
+        CFStringTokenizerSetString(tokenizer, (__bridge CFStringRef)self.string, CFRangeMake(self.range.location, self.range.length));
     }
     else if ([keyPath isEqualToString:@"options"] || [keyPath isEqualToString:@"locale"]) {
         CFRelease(tokenizer);
@@ -165,10 +165,7 @@
     [self removeObserver:self forKeyPath:@"range"];
     [self removeObserver:self forKeyPath:@"options"];
     [self removeObserver:self forKeyPath:@"locale"];
-    self.string = nil;
-    self.locale = nil;
     CFRelease(tokenizer);
-    [super dealloc];
 }
 
 
@@ -187,7 +184,7 @@
 
 
 + (NSString *)bestStringLanguage:(NSString *)string range:(NSRange)range {
-    return [(NSString *)CFStringTokenizerCopyBestStringLanguage((CFStringRef)string, CFRangeMake(range.location, range.length)) autorelease];
+    return (__bridge_transfer NSString *)CFStringTokenizerCopyBestStringLanguage((__bridge CFStringRef)string, CFRangeMake(range.location, range.length));
 }
 
 
@@ -223,7 +220,6 @@
     while (mask != kCFStringTokenizerTokenNone) {
         CSStringToken *token = [[CSStringToken alloc] initFromTokenizer:tokenizer withString:string withMask:mask withType:type fetchSubTokens:fetch];
         [array addObject:token];
-        [token release];
         
         mask = CFStringTokenizerAdvanceToNextToken(tokenizer);
     }
@@ -234,8 +230,7 @@
 #pragma mark -
 #pragma mark Fast Enumeration
 
-
-- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id [])buffer count:(NSUInteger)len {
     CFStringTokenizerTokenType mask;
     if (state->state == 0) {
         mask = CFStringTokenizerGoToTokenAtIndex(tokenizer, 0);
@@ -250,15 +245,15 @@
     BOOL fetch = self.fetchesSubTokens;
     while (mask != kCFStringTokenizerTokenNone && count < len) {
         CSStringToken *token = [CSStringToken tokenFromTokenizer:tokenizer withString:string withMask:mask withType:type fetchSubTokens:fetch];
-        stackbuf[count] = token;
+        buffer[count] = token;
         
         mask = CFStringTokenizerAdvanceToNextToken(tokenizer);
         count++;
     }
     
     state->state = count;
-    state->itemsPtr = stackbuf;
-    state->mutationsPtr = (unsigned long *)self;
+    state->itemsPtr = buffer;
+    state->mutationsPtr = &state->extra[0];
     
     return count;
 }
@@ -270,7 +265,7 @@
 
 - (void)createTokenizer {
     CFRange rng = CFRangeMake(self.range.location, self.range.length);
-    tokenizer = CFStringTokenizerCreate(kCFAllocatorDefault, (CFStringRef)self.string, rng, self.options, (CFLocaleRef)self.locale);
+    tokenizer = CFStringTokenizerCreate(kCFAllocatorDefault, (__bridge CFStringRef)self.string, rng, self.options, (__bridge CFLocaleRef)self.locale);
 }
 
 
