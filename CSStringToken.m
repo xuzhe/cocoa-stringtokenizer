@@ -17,7 +17,7 @@
 @property(readwrite, copy) NSString *latinTranscription;
 @property(readwrite, copy) NSString *language;
 @property(readwrite) BOOL hasSubTokens;
-@property(readwrite, retain) NSArray *subTokens;
+@property(readwrite, strong) NSArray *subTokens;
 @property(readwrite) BOOL containsNumbers;
 @property(readwrite) BOOL containsNonLetters;
 @property(readwrite) BOOL isCJWord;
